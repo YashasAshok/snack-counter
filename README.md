@@ -6,12 +6,15 @@ The chat tool and the HR system are simulated (`snack_counter/fakes.py`). Design
 
 ## Run it
 
-Python 3.10 or newer. Only the tests need an extra package (`pytest`).
+Python 3.10 or newer. The code uses only the standard library; the tests need `pytest`.
 
 ```bash
-python3 demo.py            # one November in both offices, printed as a chat transcript
-python3 -m pytest -v       # the tests
+python3 demo.py                                  # one November in both offices, printed as a chat transcript
+python3 -m pip install -r requirements-dev.txt   # once, for the tests
+python3 -m pytest -v                             # the tests
 ```
+
+The tests and the demo also run automatically on GitHub on every push, on Python 3.10 and 3.13 (`.github/workflows/tests.yml`).
 
 ## Layout
 
@@ -37,6 +40,8 @@ demo.py              scripted demo
 tests/               one file per rule area, plus an end-to-end run of the demo
 docs/design.md       design document
 docs/assumptions.md  the questions I'd have asked, and the assumption taken for each
+requirements-dev.txt  test dependency (pytest)
+.github/workflows/    runs the tests and the demo on every push
 ```
 
 ## The rules the tests prove

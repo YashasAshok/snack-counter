@@ -1,10 +1,18 @@
-"""Two people cannot both commit to the same refill."""
+"""Two people cannot both commit to the same refill.
+
+Python runs the accept code so fast that two threads rarely overlap by chance,
+so these tests deliberately slow down the moment between "is this refill
+still free?" and "it's mine". Without the lock in RefillService, both people
+would get the refill and these tests fail (checked by removing the lock).
+"""
 
 import threading
+import time
 
 import pytest
 from conftest import accept, oslo, report
 
+from snack_counter import budget
 from snack_counter.actions import Action
 from snack_counter.models import RefillState as S
 from snack_counter.sample_data import INGRID, KARI, LARS, OLA, OSLO, PRIYA
@@ -19,9 +27,23 @@ def _broadcast_refill(app):
     return refill
 
 
+def _slow_down(monkeypatch, module, name):
+    """Make `module.name` take 50 ms, widening the window where a race could happen."""
+    real = getattr(module, name)
+
+    def slow(*args, **kwargs):
+        time.sleep(0.05)
+        return real(*args, **kwargs)
+
+    monkeypatch.setattr(module, name, slow)
+
+
 @pytest.mark.parametrize("attempt", range(20))
-def test_two_people_cannot_commit_to_the_same_refill(app, attempt):
+def test_two_people_cannot_commit_to_the_same_refill(app, attempt, monkeypatch):
     refill = _broadcast_refill(app)
+    # accept() checks the refill is free, then checks the budget, then commits:
+    # a slow budget check gives the second tap every chance to sneak in.
+    _slow_down(monkeypatch, budget, "can_start_refill")
     start = threading.Barrier(2)
     results = {}
 
@@ -50,7 +72,10 @@ def test_everyone_else_is_told_who_took_the_broadcast(app):
         assert "Ingrid is refilling the Oslo box" in app.chat.last(other).text
 
 
-def test_only_one_refill_per_office_even_when_reported_at_the_same_instant(app):
+def test_only_one_refill_per_office_even_when_reported_at_the_same_instant(app, monkeypatch):
+    # report_empty() checks there is no open refill, then creates one:
+    # a slow ID generator gives the other reports every chance to sneak in.
+    _slow_down(monkeypatch, app.store, "new_refill_id")
     start = threading.Barrier(5)
     people = [KARI, LARS, INGRID, OLA, PRIYA]
 

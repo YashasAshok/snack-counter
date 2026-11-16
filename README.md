@@ -42,7 +42,7 @@ docs/design.md       design document
 
 | Rule | Tests |
 |---|---|
-| Two people can't both commit to the same refill | `test_concurrency.py` (two threads tap at the same instant, 20 runs) |
+| Two people can't both commit to the same refill | `test_concurrency.py` (two threads tap at the same instant, with the race window deliberately widened; fails if the lock is removed) |
 | A second "empty" report doesn't create a second refill | `test_lifecycle.py`, `test_concurrency.py` |
 | An offer nobody answers, or a refill nobody finishes, goes to someone else | `test_timeouts.py` |
 | Buyers are chosen fairly; away, busy and owed-too-much people are skipped | `test_assignment.py` |
@@ -51,5 +51,6 @@ docs/design.md       design document
 | Currencies are never mixed; the report totals are right across both | `test_money.py`, `test_reporting.py` |
 | HR claims are filed automatically, never duplicated, tracked and chased | `test_reimbursement.py` |
 | Only the right people can do each action; stale buttons do nothing | `test_bot.py` |
+| Side states: BLOCKED_BUDGET, NEEDS_APPROVAL, SUBMIT_PENDING, REJECTED, CANCELLED (how each is entered and left) | `test_side_states.py` |
 | Shopping hints | `test_insights.py` |
 | The whole demo month adds up | `test_end_to_end.py` |

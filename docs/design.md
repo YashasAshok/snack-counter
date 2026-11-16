@@ -10,7 +10,7 @@ Today the process fails because **nobody owns a refill**, **nothing is shared** 
 4. **files the HR claim automatically** when the refill is done, then tracks it until it's paid;
 5. records every purchase (amount, currency, items), so the **monthly report** comes for free.
 
-Everything anyone needs to tell the bot is a **small, fixed set of about 16 actions** (employee, volunteer, office admin), so people use **buttons, pickers and short forms**, not commands or free text. The bot shows each person **only the buttons that are valid for them right now**, and the service **re-checks every action**, so an old or double-tapped button can't do any harm.
+Everything anyone needs to tell the bot is a **small, fixed set of 19 actions** (employee, volunteer, office admin; listed in `actions.py`), so people use **buttons, pickers and short forms**, not commands or free text. The bot shows each person **only the buttons that are valid for them right now**, and the service **re-checks every action**, so an old or double-tapped button can't do any harm.
 
 ## How a refill moves from "empty" to "reimbursed"
 
@@ -61,6 +61,7 @@ Side states: BLOCKED_BUDGET · NEEDS_APPROVAL (over the limit) · SUBMIT_PENDING
 - The spending limit is the smaller of what's left and the top of the typical range. Over the limit → admin approval.
 - HR returns a claim ID, is polled (no webhooks assumed), and can reject claims. The typed amount is trusted; HR checks the receipt.
 - Reporting currency is NOK. The chat tool supports buttons and forms (fallback: numbered replies).
+- The full list of 25 questions and assumptions, with the reasoning and what would change for each, is in `docs/assumptions.md`.
 
 ## Trade-offs
 

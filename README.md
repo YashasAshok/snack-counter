@@ -2,7 +2,7 @@
 
 Core logic for a chat bot that keeps the Oslo and Bengaluru snack boxes stocked: it picks a buyer fairly, hands refills on when nobody acts, prevents double purchases, checks the budget, files HR claims automatically and produces the monthly report.
 
-The chat tool and the HR system are simulated (`snack_counter/fakes.py`). Design: [`docs/design.md`](docs/design.md).
+The chat tool and the HR system are simulated (`snack_counter/fakes.py`). Design: [`docs/design.md`](docs/design.md). Questions and assumptions: [`docs/assumptions.md`](docs/assumptions.md).
 
 ## Run it
 
@@ -36,6 +36,7 @@ snack_counter/
 demo.py              scripted demo
 tests/               one file per rule area, plus an end-to-end run of the demo
 docs/design.md       design document
+docs/assumptions.md  the questions I'd have asked, and the assumption taken for each
 ```
 
 ## The rules the tests prove
